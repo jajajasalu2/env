@@ -12,6 +12,7 @@ VIMPLUG_DLD_LINK="https://raw.githubusercontent.com/junegunn/vim-plug/master/plu
 GIT=git
 NVIM=nvim
 CURL=curl
+MAKE=make
 
 # Other vars
 USERHOME=$HOME
@@ -21,7 +22,7 @@ install_neovim() {
 	$GIT clone $NEOVIM_GIT "$USERHOME/repos/neovim"
 
 	echo "Installing neovim..."
-	(cd "$USERHOME/repos/neovim" && make install)
+	(cd "$USERHOME/repos/neovim" && $MAKE install)
 }
 
 install_vimrc() {
@@ -80,6 +81,10 @@ command -v $GIT >/dev/null 2>&1 || {
 }
 command -v $CURL >/dev/null 2>&1 || {
 	echo >&2 "Can't find curl. Aborting.";
+	exit 1;
+}
+command -v $MAKE >/dev/null 2>&1 || {
+	echo >&2 "Can't find make. Aborting.";
 	exit 1;
 }
 mkdir -p "$USERHOME/repos"
