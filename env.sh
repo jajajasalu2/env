@@ -7,23 +7,17 @@ VIMRC_GIT="https://github.com/jajajasalu2/.vimrc"
 NEOVIM_GIT="https://github.com/neovim/neovim"
 TMUXCONF_GIT="https://github.com/gpakosz/.tmux"
 VIMPLUG_DLD_LINK="https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+OHMYZSH_DLD_LINK="https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh"
 
 # Aliases
 GIT=git
 NVIM=nvim
 CURL=curl
 MAKE=make
+ZSH=zsh
 
 # Other vars
 USERHOME=$HOME
-
-install_neovim() {
-	echo "Cloning neovim from $NEOVIM_GIT..."
-	$GIT clone $NEOVIM_GIT "$USERHOME/repos/neovim"
-
-	echo "Installing neovim..."
-	(cd "$USERHOME/repos/neovim" && $MAKE install)
-}
 
 install_vimrc() {
 	echo "Cloning .vimrc from $VIMRC_GIT..."
@@ -47,7 +41,6 @@ install_vimplug() {
 }
 
 setup_vim() {
-	install_neovim
 	install_vimrc
 	install_vimplug
 }
@@ -61,6 +54,12 @@ setup_tmux() {
 	cp "$USERHOME/repos/.tmux/.tmux.conf.local" "$USERHOME/.tmux.conf.local"
 }
 
+setup_zsh() {
+	curl -fsSL $OHMYZSH_DLD_LINK -o $HOME/ohmyzsh.sh
+	chmod 755 $HOME/ohmyzsh.sh
+	/bin/sh $HOME/ohmyzsh.sh
+}
+
 setup_all() {
 	setup_vim
 	setup_tmux
@@ -71,8 +70,7 @@ setup_all() {
 # ------------------------------------------------------------------
 
 echo "jajajasalu2's New machine setup."
-echo "Run this script with sudo."
-echo "Make sure to install git, make and curl before running this script."
+echo "Make sure to install git, make, curl and zsh before running this script."
 
 # pre-setup
 command -v $GIT >/dev/null 2>&1 || {
@@ -87,6 +85,10 @@ command -v $MAKE >/dev/null 2>&1 || {
 	echo >&2 "Can't find make. Aborting.";
 	exit 1;
 }
+command -v $ZSH >/dev/null 2>&1 || {
+	echo >&2 "Can't find zsh. Aborting.";
+	exit 1;
+}
 mkdir -p "$USERHOME/repos"
 
 # options
@@ -95,12 +97,12 @@ case ${1} in
 	;;
 	"vimall") setup_vim
 	;;
-	"neovim") install_neovim
-	;;
 	"vimrc") install_vimrc
 	;;
 	"vimplug") install_vimplug
 	;;
 	"tmux") setup_tmux
+	;;
+	"zsh") setup_zsh
 	;;
 esac
